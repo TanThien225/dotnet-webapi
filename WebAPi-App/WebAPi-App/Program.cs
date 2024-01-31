@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using WebAPi_App.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,9 +10,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//
+//CORS
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
 policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
+builder.Services.AddDbContext<MyDBContext>(option =>
+{
+	option.UseSqlServer(builder.Configuration.GetConnectionString("MyDB"));
+});
 
 var app = builder.Build();
 
