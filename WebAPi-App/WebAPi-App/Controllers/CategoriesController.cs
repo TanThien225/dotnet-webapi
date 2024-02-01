@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPi_App.Data;
 using WebAPi_App.Models;
@@ -18,8 +19,14 @@ namespace WebAPi_App.Controllers
 		[HttpGet]
 		public IActionResult GetAllCategories()
 		{
-			var CategoriesList = _context.Categories.ToList();
-			return Ok(CategoriesList);
+			try {
+				var CategoriesList = _context.Categories.ToList();
+				return Ok(CategoriesList);
+			}
+			catch
+			{
+				return BadRequest();
+			}
 		}
 
 		[HttpGet("{id}")]
@@ -34,6 +41,7 @@ namespace WebAPi_App.Controllers
 		}
 
 		[HttpPost]
+		[Authorize]
 		public IActionResult CreateNewCategory(CategoryModel model)
 		{
 			try
@@ -44,7 +52,7 @@ namespace WebAPi_App.Controllers
 				};
 				_context.Add(category);
 				_context.SaveChanges();
-				return Ok(category);
+				return StatusCode(StatusCodes.Status201Created, category);
 			}
 			catch
 			{
@@ -63,6 +71,19 @@ namespace WebAPi_App.Controllers
 			category.CategoryName = model.CategoryName;
 			_context.SaveChanges();
 			return NoContent();
+		}
+
+		[HttpDelete("{id}")]
+		public IActionResult DeleteCategoryById(int id)
+		{
+			var category = _context.Categories.SingleOrDefault(cate => cate.CategoryId == id);
+			if (category is null)
+			{
+				return NotFound();
+			}
+			_context.Remove(category);
+			_context.SaveChanges();
+			return StatusCode(StatusCodes.Status200OK);
 		}
 
 	}
