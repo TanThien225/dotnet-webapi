@@ -31,6 +31,8 @@ builder.Services.AddDbContext<MyDBContext>(option =>
 //inmemory static Tai 1 thoi diem 1 inteface chi co tuong ung co 1
 builder.Services.AddScoped<ICategoryRepository, CategoryRepositoryInMemory>();
 
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+
 var secretKey = builder.Configuration["AppSettings:SecretKey"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
