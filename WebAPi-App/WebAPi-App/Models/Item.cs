@@ -11,4 +11,12 @@
 		public Guid IdItem { get; set; } 
 		
 	}
+
+	public class ItemModel
+	{
+		public Guid IdItem { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public double Price { get; set; }
+		public string CategoryName { get; set; } = string.Empty;
+	}
 }

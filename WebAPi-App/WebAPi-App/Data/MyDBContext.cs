@@ -11,6 +11,9 @@ namespace WebAPi_App.Data
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderDetail> OrderDetails { get; set; }
+		public DbSet<User> Users { get; set; }
+		
+		public DbSet<RefreshToken> RefreshTokens { get; set; }
 		#endregion
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +41,13 @@ namespace WebAPi_App.Data
 					.WithMany(e => e.OrderDetails)
 					.HasForeignKey(e => e.Id)
 					.HasConstraintName("FK_OrderDetail_Item");
+			});
+
+			modelBuilder.Entity<User>(entity =>
+			{
+				entity.HasIndex(e => e.Username).IsUnique();
+				entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+				entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
 			});
 		}
 	}
