@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using WebAPi_App.Controllers;
 using WebAPi_App.Data;
+using WebAPi_App.Models;
 using WebAPi_App.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +33,9 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepositoryInMemory>();
 
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 
+//Configure appsettings.json map voi appsetting.cs de dung secretKey
+builder.Services.Configure<AppSetting>(builder.Configuration.GetSection("AppSettings"));
+
 var secretKey = builder.Configuration["AppSettings:SecretKey"];
 var secretKeyBytes = Encoding.UTF8.GetBytes(secretKey);
 
@@ -40,9 +43,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 {
 	opt.TokenValidationParameters = new TokenValidationParameters
 	{
+		//Tu cap token
 		ValidateIssuer = false,
 		ValidateAudience = false,
 
+		//ký vào token
 		ValidateIssuerSigningKey = true,
 		IssuerSigningKey = new SymmetricSecurityKey(secretKeyBytes),
 
@@ -60,6 +65,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
